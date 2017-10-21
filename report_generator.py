@@ -9,22 +9,14 @@ PHENOTYPES = {'traits': ['eye-color', 'beard-thickness', 'morning-person', 'weig
                               'conscientiousness', 'openness', 'depression', 'anger',
                               'reward-dependence', 'harm-avoidance', 'gambling',
                               'novelty-seeking'],
-              'intelligence': ['childhood-intelligence', 'hearing-function',
-                               'word-reading-ability', 'reading-and-spelling-ability'],
-              'food_and_nutrition': ['protein-intake', 'carbohydrate-intake',
-                                     'red-wine-liking', 'white-wine-liking',
-                                     'smell-sensitivity-for-malt', 'smoking-behavior',
-                                     'bitter-taste', 'caffeine-metabolite-ratio',
-                                     'caffeine-consumption', 'alcohol-drinking-behavior',
-                                     'egg-allergy', 'peanuts-allergy', 'milk-allergy',
-                                     'vitamin-a', 'vitamin-b12', 'vitamin-d', 'vitamin-e',
-                                     'response-to-vitamin-e-supplementation', 'folate',
+              'food_and_nutrition': ['protein-intake', 'carbohydrate-intake', 'bitter-taste',
+                                     'vitamin-a', 'vitamin-b12', 'vitamin-d', 'vitamin-e', 'folate',
                                      'calcium', 'magnesium', 'phosphorus', 'iron',
                                      'alpha-linolenic-acid', 'beta-carotene'],
-              'sports': ['endurance-performance'],
+              'allergies': ['egg-allergy', 'peanuts-allergy', 'milk-allergy'],
               'disease': ['lung-cancer', 'colorectal-cancer', 'gastric-cancer', 'breast-cancer',
                           'liver-cancer', 'pancreatic-cancer', 'prostate-cancer', 'type-2-diabetes',
-                          'myocardial-infarction', 'nicotine-dependence']}
+                          'myocardial-infarction', 'nicotine-dependence', 'smoking-behavior']}
 
 
 class UserProfile():
