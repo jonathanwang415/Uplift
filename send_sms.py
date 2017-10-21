@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from twilio.rest import Client
 
 # Your Account SID from twilio.com/console
@@ -11,4 +12,4 @@ message = client.messages.create(
     from_="+15174814216", # Our registered Twilio number
     body="Hello from Python!") # The messsage we are sending
 
-print message.sid
+print(message.sid)
