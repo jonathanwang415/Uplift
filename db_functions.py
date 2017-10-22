@@ -5,7 +5,7 @@ from selenium import webdriver
 from report_generator import PHENOTYPES, UserProfile, login, driver
 
 
-def add_user(name, phone_number, cursor):
+def add_user(phone_number, name, cursor):
     query = 'SELECT * FROM users WHERE phone_number={}'.format(phone_number)
     cursor.execute(query)
     user = cursor.fetchone()
@@ -27,11 +27,17 @@ def add_user(name, phone_number, cursor):
             print(err)
 
 
+def set_user_state(phone_number, state, cursor):
+    query = 'UPDATE users SET state={} WHERE phone_number={};'.format(str(state), phone_number)
+    cursor.execute(query)
+
+
 if __name__ == '__main__':
     login()
     try:
         with mdb.connect('localhost', 'root', 'toor', 'userdb') as cur:
-            add_user('Patrick Woo-Sam', '+17146235999', cur)
+            add_user('+17146235999', 'Patrick Woo-Sam', cur)
+            set_user_state('+17146235999', 0, cur)
     except Exception as err:
         print(err)
     finally:
