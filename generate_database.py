@@ -63,9 +63,9 @@ with mdb.connect('localhost', 'root', 'toor', 'userdb') as cur:
                 '\'Prone to Prostate Cancer.\', \'Highly prone to Prostate Cancer.\',' 
                 '\'{}\', \'{}\', \'{}\', \'{}\')'.format(P_oneSug, P_twoSug, P_threeSug, P_fourSug)))
 
-    Di_oneSug = 'Drink a large glass of water 10 minutes before your meal so you feel less hungry. This will help moderate your portion sizes.'
-    Di_twoSug = 'Try filling your plate with 1/4 protien, 1/4 grains, 1/2 vegetables and fruit, dairy: low-fat or skim milk.'
-    Di_threeSug = 'Turn up the music and jam while doing household chores to help with being active. Do not like chores? March in place while wathing tv.'
+    Di_oneSug = 'Stay away from tobacco. If you stop smoking, your damaged lung tissue slowly starts to repait itself.'
+    Di_twoSug = 'Avoid Radon. You can reduce your exposure by having your home tested or treated.'
+    Di_threeSug = 'Some people who get lung cancer do not have any clear risk factors, Although most lung cancers can be prevented, there are still some who cannot.'
     Di_fourSug = 'Here is a yummy meal to try: Serve your favorite vegetable and a sald with low-fat macaroni and cheese.'
     cur.execute(('INSERT INTO disease(phenotype_name, zero, one, two, three, four, s_one, s_two, s_three, s_four) VALUES(\'type_2_diabetes\',' 
                 '\'Lower risk of Type-2-Diabetes.\', \'Slightly prone to Type-2-Diabetes\', \'Intermediatly prone to Type-2-Diabetes\',' 
@@ -73,12 +73,12 @@ with mdb.connect('localhost', 'root', 'toor', 'userdb') as cur:
                 '\'{}\', \'{}\', \'{}\', \'{}\')'.format(Di_oneSug, Di_twoSug, Di_threeSug, Di_fourSug)))
     
     L_oneSug = 'Drink a large glass of water 10 minutes before your meal so you feel less hungry. This will help moderate your portion sizes.'
-    L_twoSug = 'Try filling your plate with 1/4 protien, 1/4 grains, 1/2 vegetables and fruit, dairy (low-fat or skim milk).'
+    L_twoSug = 'Try filling your plate with 1/4 protien, 1/4 grains, 1/2 vegetables and fruit, dairy low-fat or skim milk.'
     L_threeSug = 'Turn up the music and jam while doing household chores to help with being active. Don\'t like chores? March in place while wathing tv.'
     L_fourSug = 'Here\'s a yummy meal to try: Serve your favorite vegetable and a sald with low-fat macaroni and cheese.'
     cur.execute(('INSERT INTO disease(phenotype_name, zero, one, two, three, four, s_one, s_two, s_three, s_four) VALUES(\'lung_cancer\',' 
-                '\'Lower risk of lung cancer\', \'Slightly prone to lung cancer\', \'intermediatly prone to lung cancer\',' 
-                '\'Prone to lung cancer\', \'Highly prone to lung cancer\',' 
+                '\'Lower risk of Lung Cancer.\', \'Slightly prone to Lung Cancer.\', \'Intermediatly prone to Lung Cancer.\',' 
+                '\'Prone to lung cancer.\', \'Highly prone to lung cancer.\',' 
                 '\'{}\', \'{}\', \'{}\', \'{}\')'.format(L_oneSug, L_twoSug, L_threeSug, L_fourSug)))
     
     cur.execute(('CREATE TABLE personality(id INT PRIMARY KEY AUTO_INCREMENT, phenotype_name VARCHAR(150), zero VARCHAR(100),'
