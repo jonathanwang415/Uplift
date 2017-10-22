@@ -15,7 +15,8 @@ def sms_reply():
     body = request.values.get('Body', None)
     # Check new user
     STATE = getState(fromNumber)
-    reply(fromNumber,body, STATE)
+    reply(fromNumber, body, STATE)
+
 
     # Other fields we could leverage later on
     # direction = request.values.get('Direction', None)

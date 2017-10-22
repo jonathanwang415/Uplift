@@ -9,6 +9,9 @@ from bs4 import BeautifulSoup
 import json
 import random
 
+
+driver = webdriver.Chrome()
+
 PHENOTYPES = {'trait': ['eye-color', 'beard-thickness', 'morning-person', 'weight',
                          'bmi', 'red-hair', 'black-hair', 'motion-sickness', 'lobe-size',
                          'handedness', 'longevity', 'skin-pigmentation',
@@ -16,7 +19,7 @@ PHENOTYPES = {'trait': ['eye-color', 'beard-thickness', 'morning-person', 'weigh
               'personality': ['agreeableness', 'neuroticism', 'extraversion',
                               'conscientiousness', 'openness', 'depression', 'anger',
                               'reward-dependence', 'harm-avoidance', 'novelty-seeking'],
-              'food_and_nutrition': ['protein-intake', 'carbohydrate-intake', 'bitter-taste',
+              'food_and_nutrition': ['protein-intake', 'carbohydrate-intake',
                                      'vitamin-a', 'vitamin-b12', 'vitamin-d', 'vitamin-e', 'folate',
                                      'calcium', 'magnesium', 'phosphorus', 'iron',
                                      'alpha-linolenic-acid', 'beta-carotene'],
@@ -24,6 +27,14 @@ PHENOTYPES = {'trait': ['eye-color', 'beard-thickness', 'morning-person', 'weigh
               'disease': ['lung-cancer', 'colorectal-cancer', 'gastric-cancer', 'breast-cancer',
                           'liver-cancer', 'pancreatic-cancer', 'prostate-cancer', 'type-2-diabetes',
                           'myocardial-infarction', 'nicotine-dependence']}
+
+
+def login():
+    driver.get('https://genomelink.io/login/')
+    time.sleep(1)
+    driver.find_element_by_id('id_login').send_keys('mr3tiago')
+    driver.find_element_by_id('id_password').send_keys('63baby2night_test')
+    driver.find_element_by_xpath('/html/body/div[2]/div/form/button').click()
 
 
 def threaded(fn):
@@ -85,12 +96,7 @@ class UserProfile():
 
 
 if __name__ == '__main__':
-    driver = webdriver.Chrome()
-    time.sleep(1)
-    driver.get('https://genomelink.io/login/')
-    driver.find_element_by_id('id_login').send_keys('mr3tiago')
-    driver.find_element_by_id('id_password').send_keys('63baby2night_test')
-    driver.find_element_by_xpath('/html/body/div[2]/div/form/button').click()
+    login()
     profile = UserProfile('european', 'disease')
     for key, val in profile.scores.items():
         print(key + ':', val)
