@@ -2,7 +2,7 @@
 import MySQLdb as mdb
 
 
-with mdb.connect('localhost', 'abi', 'abi123', 'uplift') as cur:
+with mdb.connect('localhost', 'root', 'toor', 'userdb') as cur:
     cur.execute('DROP TABLE IF EXISTS personality')
     cur.execute(('CREATE TABLE personality(id INT PRIMARY KEY AUTO_INCREMENT, phenotype_name VARCHAR(150), zero VARCHAR(100),'
                 'one VARCHAR(100), two VARCHAR(100), three VARCHAR(100), four VARCHAR(100), s_one VARCHAR(1000), s_two VARCHAR(1000),' 
