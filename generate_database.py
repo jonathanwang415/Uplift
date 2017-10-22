@@ -74,8 +74,8 @@ with mdb.connect('localhost', 'root', 'toor', 'userdb') as cur:
     
     L_oneSug = 'Drink a large glass of water 10 minutes before your meal so you feel less hungry. This will help moderate your portion sizes.'
     L_twoSug = 'Try filling your plate with 1/4 protien, 1/4 grains, 1/2 vegetables and fruit, dairy low-fat or skim milk.'
-    L_threeSug = 'Turn up the music and jam while doing household chores to help with being active. Don\'t like chores? March in place while wathing tv.'
-    L_fourSug = 'Here\'s a yummy meal to try: Serve your favorite vegetable and a sald with low-fat macaroni and cheese.'
+    L_threeSug = 'Turn up the music and jam while doing household chores to help with being active. Do not like chores? March in place while wathing tv.'
+    L_fourSug = 'Here is a yummy meal to try: Serve your favorite vegetable and a sald with low-fat macaroni and cheese.'
     cur.execute(('INSERT INTO disease(phenotype_name, zero, one, two, three, four, s_one, s_two, s_three, s_four) VALUES(\'lung_cancer\',' 
                 '\'Lower risk of Lung Cancer.\', \'Slightly prone to Lung Cancer.\', \'Intermediatly prone to Lung Cancer.\',' 
                 '\'Prone to lung cancer.\', \'Highly prone to lung cancer.\',' 
