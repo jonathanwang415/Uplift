@@ -2,7 +2,7 @@ import random
 import MySQLdb as mdb
 from twilio.twiml.messaging_response import MessagingResponse
 from userStates import OFF, NEW_USER, ADDING_USER, EXISTING_USER, CATEGORY_INPUT, GETTING_CATEGORY
-from db_functions import set_user_state, add_user, get_scores, user_exists
+from db_functions import set_user_state, add_user, get_scores, user_exists, num_suggestions, get_suggestions
 from report_generator import PHENOTYPES
 
 categoriesCommands = ["1", "2", "3", "4", "5"]
@@ -22,9 +22,12 @@ def getPhenotypeDescription(phenotype):
     return "description"
 
 
-# TODO
 def getPhenotypeRecommendation(phenotype):
-    return "recommendation"
+    with mdb.connect('localhost', 'root', 'toor', 'userdb') as cur:
+        if num_suggestions(phenotype, cur):
+            return random.choice(get_suggestions(phenotype, cur))
+        else:
+            return 'No recommendations yet..'
 
 
 def getScores(phoneNumber, phenotypes):
