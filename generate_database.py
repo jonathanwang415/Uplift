@@ -23,10 +23,10 @@ with mdb.connect('localhost', 'root', 'toor', 'userdb') as cur:
                 'one VARCHAR(100), two VARCHAR(100), three VARCHAR(100), four VARCHAR(100), s_one VARCHAR(1000), s_two VARCHAR(1000),' 
                 's_three VARCHAR(1000), s_four VARCHAR(1000) )'))
     
-    F_oneSug = 'Consider including more greens (broccoli, romaine lettuce, spinach) in your diet'
-    F_twoSug = 'Consider eating more avocados'
-    F_threeSug = 'Consider eating citrus fruits'
-    F_fourSug = 'Consider eating more beans, peas, and lentils'
+    F_oneSug = 'Consider including more greens (broccoli, romaine lettuce, spinach) in your diet.'
+    F_twoSug = 'Consider eating more avocados to lower your chances of having Folate deficiency.'
+    F_threeSug = 'Consider eating citrus fruits.'
+    F_fourSug = 'Consider eating more beans, peas, and lentils.'
     cur.execute(('INSERT INTO foodnutrition(phenotype_name, zero, one, two, three, four, s_one, s_two, s_three, s_four) VALUES(\'folate\','
                 '\'Prone to Folate deficiency\', \'somewhat prone to Folate deficiency\', \'intermediatly prone to Folate deficiency\','
                 '\'slightly prone to Folate deficiency\', \'not likely to be prone to Folate deficiency\','
@@ -34,8 +34,8 @@ with mdb.connect('localhost', 'root', 'toor', 'userdb') as cur:
     
     C_oneSug = 'Consider eating more kelp.'
     C_twoSug = 'Consider including sardines in your diet.'
-    C_threeSug = 'Consider adding sesame seeds to your meals'
-    C_fourSug = 'Consider drinking more milk'
+    C_threeSug = 'Consider adding sesame seeds to your meals.'
+    C_fourSug = 'Consider drinking more milk.'
     cur.execute(('INSERT INTO foodnutrition(phenotype_name, zero, one, two, three, four, s_one, s_two, s_three, s_four) VALUES(\'calcium\','
                 '\'Prone to Calcium deficiency\', \'somewhat prone to Calcium deficiency\', \'intermediatly prone to Calcium deficiency\',' 
                 '\'slightly prone to Calcium deficiency\', \'not likely to be prone to Calcium deficiency\','
@@ -63,14 +63,14 @@ with mdb.connect('localhost', 'root', 'toor', 'userdb') as cur:
                 '\'Prone to Prostate Cancer\', \'Highly prone to Prostate Cancer\',' 
                 '\'{}\', \'{}\', \'{}\', \'{}\')'.format(P_oneSug, P_twoSug, P_threeSug, P_fourSug)))
 
-    P_oneSug = 'Watch your calcium intake and do not take supplemental doses far about the recommended daily allowance'
-    P_twoSug = 'Eat more fish (evidence and studies suggest that fish can help protect against prostate cancer with good fats'
-    P_threeSug = 'Incorporating more cooked tomatoes (cooked with olive) into the daily meals'
-    P_fourSug = 'Seek medical treatment for stress, high blood pressure, diabetes, high cholesterol, and depression'
+    Di_oneSug = 'Drink a large glass of water 10 minutes before your meal so you feel less hungry. This will help moderate your portion sizes.'
+    Di_twoSug = 'Try filling your plate with 1/4 protien, 1/4 grains, 1/2 vegetables and fruit, dairy (low-fat or skim milk).'
+    Di_threeSug = 'Turn up the music and jam while doing household chores to help with being active. Don\'t like chores? March in place while wathing tv.'
+    Di_fourSug = 'Here\'s a yummy meal to try: Serve your favorite vegetable and a sald with low-fat macaroni and cheese.'
     cur.execute(('INSERT INTO disease(phenotype_name, zero, one, two, three, four, s_one, s_two, s_three, s_four) VALUES(\'type_2_diabetes\',' 
-                '\'Not very prone to Prostate Cancer\', \'Slightly prone to Prostate Cancer\', \'intermediatly prone to Prostate Cancer\',' 
-                '\'Prone to Prostate Cancer\', \'Highly prone to Prostate Cancer\',' 
-                '\'{}\', \'{}\', \'{}\', \'{}\')'.format(P_oneSug, P_twoSug, P_threeSug, P_fourSug)))
+                '\'Lower risk of type-2-diabetes\', \'Slightly prone to type-2-diabetes\', \'intermediatly prone to type-2-diabetes\',' 
+                '\'Prone to type-2-diabetes\', \'Highly prone to type-2-diabetes\',' 
+                '\'{}\', \'{}\', \'{}\', \'{}\')'.format(Di_oneSug, Di_twoSug, Di_threeSug, Di_fourSug)))
     
     cur.execute(('CREATE TABLE personality(id INT PRIMARY KEY AUTO_INCREMENT, phenotype_name VARCHAR(150), zero VARCHAR(100),'
                 'one VARCHAR(100), two VARCHAR(100), three VARCHAR(100), four VARCHAR(100), s_one VARCHAR(1000), s_two VARCHAR(1000),' 
