@@ -78,16 +78,16 @@ with mdb.connect('localhost', 'root', 'toor', 'userdb') as cur:
     L_fourSug = 'Drinking a cup of Green Tea has been shown to prevent damage to cells. Maybe do some more research on this while drinking a cup of tea!'
     cur.execute(('INSERT INTO disease(phenotype_name, zero, one, two, three, four, s_one, s_two, s_three, s_four) VALUES(\'lung_cancer\',' 
                 '\'Lower risk of Lung Cancer.\', \'Slightly prone to Lung Cancer.\', \'Intermediatly prone to Lung Cancer.\',' 
-                '\'Prone to lung cancer.\', \'Highly prone to lung cancer.\',' 
+                '\'Prone to Lung Cancer.\', \'Highly prone to Lung Cancer.\',' 
                 '\'{}\', \'{}\', \'{}\', \'{}\')'.format(L_oneSug, L_twoSug, L_threeSug, L_fourSug)))
     
-    Pr_oneSug = 'Eat more fat from plants thatn animal, it has been shown that fats from animals increased the risk. Consider Olive Oil rather than butter.'
+    Pr_oneSug = 'Eat more fat from plants that animal, it has been shown that fats from animals increased the risk. Consider Olive Oil rather than butter.'
     Pr_twoSug = 'Reduce the amount of dairy you are eating each day.'
     Pr_threeSug = 'Maintain a healthy weight by setting weekly goals to achieve on your step counter. Do not have a step counter? Use your phone!'
     Pr_fourSug = 'Drinking a cup of Green Tea has been shown to prevent damage to cells. Maybe do some more research on this while drinking a cup of tea!'
     cur.execute(('INSERT INTO disease(phenotype_name, zero, one, two, three, four, s_one, s_two, s_three, s_four) VALUES(\'prostate_cancer\',' 
                 '\'Lower risk of Prostate Cancer.\', \'Slightly prone to Prostate Cancer.\', \'Intermediatly prone to Prostate Cancer.\',' 
-                '\'Prone to lung cancer.\', \'Highly prone to lung cancer.\',' 
+                '\'Prone to Prostate Cancer.\', \'Highly prone to Prostate Cancer.\',' 
                 '\'{}\', \'{}\', \'{}\', \'{}\')'.format(Pr_oneSug, Pr_twoSug, Pr_threeSug, Pr_fourSug)))
     
     Nic_oneSug = 'If you have attempted to deal with Nicotine Dependence yourself and are feeling frustrated and helpless, consider nicotine replacement therapay and talking to your doctor.'
