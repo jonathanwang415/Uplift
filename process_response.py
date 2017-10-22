@@ -2,7 +2,7 @@ import random
 import MySQLdb as mdb
 from twilio.twiml.messaging_response import MessagingResponse
 from userStates import OFF, NEW_USER, ADDING_USER, EXISTING_USER, CATEGORY_INPUT, GETTING_CATEGORY
-from db_functions import set_user_state, add_user, get_scores, user_exists, num_suggestions, get_suggestions
+from db_functions import set_user_state, add_user, get_score, get_scores, user_exists, num_suggestions, get_suggestions
 from report_generator import PHENOTYPES
 
 categoriesCommands = ["1", "2", "3", "4", "5"]
@@ -17,9 +17,31 @@ def isNewUser(phoneNumber):
             return False
 
 
-# TODO
-def getPhenotypeDescription(phenotype):
-    return "description"
+def getPhenotypeDescription(phoneNumber, phenotype):
+    with mdb.connect('localhost', 'root', 'toor', 'userdb') as cur:
+        score_str = ''
+        score = int(get_score(phoneNumber, phenotype, cur)[phenotype])
+        if score == 0:
+            score_str = 'zero'
+        elif score == 1:
+            score_str = 'one'
+        elif score == 2:
+            score_str = 'two'
+        elif score == 3:
+            score_str = 'three'
+        elif score == 4:
+            score_str = 'four'
+        else:
+            return 'No description'
+        query = 'SELECT {} FROM {} WHERE phenotype_name=\'{}\''
+        if phenotype in PHENOTYPES['disease']:
+            query = query.format(score_str, 'disease', phenotype)
+        elif phenotype in PHENOTYPES['food_and_nutrition']:
+            query = query.format(score_str, 'foodnutrition', phenotype)
+        elif phenotype in PHENOTYPES['personality']:
+            query = query.format(score_str, 'personality', phenotype)
+        else:
+            return 'No description'
 
 
 def getPhenotypeRecommendation(phenotype):
@@ -118,8 +140,8 @@ def reply(phoneNumber, body, state):
                 phenotype = random.choice(list(phenotypes.keys()))
                 score = phenotypes[phenotype]
                 msg_2 = "Here's an interesting one: " + phenotype
-                msg_3 = getPhenotypeDescription()
-                msg_4 = getPhenotypeRecommendation()
+                msg_3 = getPhenotypeDescription(phoneNumber, phenotype)
+                msg_4 = getPhenotypeRecommendation(phenotype)
                 msg_5 = "Would you like to learn more about your phenotypes?"\
                     "\n“1” to learn about your physical traits"\
                     "\n“2” to learn about your personality"\
@@ -140,8 +162,8 @@ def reply(phoneNumber, body, state):
                 phenotype = random.choice(list(phenotypes.keys()))
                 score = phenotypes[phenotype]
                 msg_2 = "Here's an interesting one: " + phenotype
-                msg_3 = getPhenotypeDescription()
-                msg_4 = getPhenotypeRecommendation()
+                msg_3 = getPhenotypeDescription(phoneNumber, phenotype)
+                msg_4 = getPhenotypeRecommendation(phenotype)
                 msg_5 = "Would you like to learn more about your phenotypes?"\
                     "\n“1” to learn about your physical traits"\
                     "\n“2” to learn about your personality"\
@@ -162,8 +184,8 @@ def reply(phoneNumber, body, state):
                 phenotype = random.choice(list(phenotypes.keys()))
                 score = phenotypes[phenotype]
                 msg_2 = "Here's an interesting one: " + phenotype
-                msg_3 = getPhenotypeDescription()
-                msg_4 = getPhenotypeRecommendation()
+                msg_3 = getPhenotypeDescription(phoneNumber, phenotype)
+                msg_4 = getPhenotypeRecommendation(phenotype)
                 msg_5 = "Would you like to learn more about your phenotypes?"\
                     "\n“1” to learn about your physical traits"\
                     "\n“2” to learn about your personality"\
@@ -184,8 +206,8 @@ def reply(phoneNumber, body, state):
                 phenotype = random.choice(list(phenotypes.keys()))
                 score = phenotypes[phenotype]
                 msg_2 = "Here's an interesting one: " + phenotype
-                msg_3 = getPhenotypeDescription()
-                msg_4 = getPhenotypeRecommendation()
+                msg_3 = getPhenotypeDescription(phoneNumber, phenotype)
+                msg_4 = getPhenotypeRecommendation(phenotype)
                 msg_5 = "Would you like to learn more about your phenotypes?"\
                     "\n“1” to learn about your physical traits"\
                     "\n“2” to learn about your personality"\
