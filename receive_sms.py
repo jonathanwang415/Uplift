@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import MySQLdb as mdb
 from flask import Flask, request, redirect
-from process_response import reply
+from process_response import reply, isNewUser
 from userStates import OFF, NEW_USER, EXISTING_USER, CATEGORY_INPUT, GETTING_CATEGORY, ADDING_USER
 from db_functions import get_user_state, driver
 
@@ -16,7 +16,10 @@ def sms_reply():
     fromNumber = request.values.get('From', None)
     body = request.values.get('Body', None)
     # Check new user
-    STATE = getState(fromNumber)
+    if isNewUser(fromNumber):
+        STATE = NEW_USER
+    else:
+        STATE = getState(fromNumber)
     return reply(fromNumber, body, STATE)
 
 
