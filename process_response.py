@@ -1,5 +1,6 @@
 import random
 import MySQLdb as mdb
+from collections import OrderedDict
 from twilio.twiml.messaging_response import MessagingResponse
 from userStates import OFF, NEW_USER, ADDING_USER, EXISTING_USER, CATEGORY_INPUT, GETTING_CATEGORY
 from db_functions import  set_user_name, set_user_state, get_user_state, add_user, get_score, get_scores, user_exists, num_suggestions, get_suggestions
@@ -8,7 +9,7 @@ from send_sms import send_message
 
 login()
 
-categoriesCommands = ["1", "2", "3", "4", "5"]
+categoriesCommands = ["1", "2", "3", "4", "5", "6"]
 quitCommands = ["q", "Q", "QUIT", "quit", "Quit"]
 
 
@@ -36,13 +37,13 @@ def getPhenotypeDescription(phoneNumber, phenotype):
             score_str = 'four'
         else:
             return 'No description'
-        query = 'SELECT {} FROM {} WHERE phenotype_name=\'{}\''
+        query = 'SELECT {} FROM {} WHERE phenotype_name=\'{}\';'
         if phenotype in PHENOTYPES['disease']:
-            query = query.format(score_str, 'disease', phenotype)
+            query = query.format(score_str, 'disease', phenotype.replace('-', '_'))
         elif phenotype in PHENOTYPES['food_and_nutrition']:
-            query = query.format(score_str, 'foodnutrition', phenotype)
+            query = query.format(score_str, 'foodnutrition', phenotype.replace('-', '_'))
         elif phenotype in PHENOTYPES['personality']:
-            query = query.format(score_str, 'personality', phenotype)
+            query = query.format(score_str, 'personality', phenotype.replace('-', '_'))
         else:
             return 'No description'
         cur.execute(query)
@@ -219,7 +220,7 @@ def reply(phoneNumber, body, state):
                 send_message(msg_5, phoneNumber)
                 # Set state to GETTING_CATEGORY
                 setState(phoneNumber, GETTING_CATEGORY)
-            else:
+            elif body == '5':
                 msg_1 = "Cool, you selected diseases! Give me a second to grab your information."
                 phenotypes = getScores(phoneNumber, PHENOTYPES['disease'])
                 phenotype = random.choice(list(phenotypes.keys()))
@@ -239,6 +240,40 @@ def reply(phoneNumber, body, state):
                 send_message(msg_3, phoneNumber)
                 send_message(msg_4, phoneNumber)
                 send_message(msg_5, phoneNumber)
+                # Set state to GETTING_CATEGORY
+                setState(phoneNumber, GETTING_CATEGORY)
+            elif body == '6':
+                msg_1 = "You are most at risk for {}, {}, and {}."
+                phenotypes = getScores(phoneNumber, PHENOTYPES['disease'])
+                phenotypes = OrderedDict(sorted(phenotypes.items(), key=lambda t: t[1]))
+                phenotypes_ = []
+                scores_ = []
+                for i in range(3):
+                    key, val = phenotypes.popitem()
+                    phenotypes_.append(key)
+                    scores_.append(val)
+                msg_1 = msg_1.format(phenotypes_[0], phenotypes_[1], phenotypes_[2])
+                msg_2 = getPhenotypeDescription(phoneNumber, phenotypes_[0])
+                msg_3 = getPhenotypeDescription(phoneNumber, phenotypes_[1])
+                msg_4 = getPhenotypeDescription(phoneNumber, phenotypes_[2])
+                msg_5 = getPhenotypeRecommendation(phenotypes_[0])
+                msg_6 = getPhenotypeRecommendation(phenotypes_[1])
+                msg_7 = getPhenotypeRecommendation(phenotypes_[2])
+                msg_8 = "Would you like to learn more about your phenotypes?"\
+                    "\n“1” to learn about your physical traits"\
+                    "\n“2” to learn about your personality"\
+                    "\n“3” to learn about your food and nutrition"\
+                    "\n“4” to learn about your allergies"\
+                    "\n“5” to learn about your diseases"\
+                    "\n“q or quit” to leave the conversation"
+                send_message(msg_1, phoneNumber)
+                send_message(msg_2, phoneNumber)
+                send_message(msg_3, phoneNumber)
+                send_message(msg_4, phoneNumber)
+                send_message(msg_5, phoneNumber)
+                send_message(msg_6, phoneNumber)
+                send_message(msg_7, phoneNumber)
+                send_message(msg_8, phoneNumber)
                 # Set state to GETTING_CATEGORY
                 setState(phoneNumber, GETTING_CATEGORY)
         elif body in quitCommands:
