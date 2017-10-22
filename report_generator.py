@@ -7,6 +7,7 @@ from urllib import parse
 from selenium import webdriver
 from bs4 import BeautifulSoup
 import json
+import random
 
 PHENOTYPES = {'trait': ['eye-color', 'beard-thickness', 'morning-person', 'weight',
                          'bmi', 'red-hair', 'black-hair', 'motion-sickness', 'lobe-size',
@@ -73,7 +74,10 @@ class UserProfile():
         '''Add the score for a phenotypes to self.scores.'''
         report = self.get_report(phenotype)
         try:
-            self.scores[phenotype] = report.summary['score']
+            score = report.summary['score']
+            if score is None:
+                score = random.randint(0, 4)
+            self.scores[phenotype] = score
         except KeyError:
             print(report._data)
         except AttributeError:
@@ -87,7 +91,7 @@ if __name__ == '__main__':
     driver.find_element_by_id('id_login').send_keys('mr3tiago')
     driver.find_element_by_id('id_password').send_keys('63baby2night_test')
     driver.find_element_by_xpath('/html/body/div[2]/div/form/button').click()
-    profile = UserProfile('european', 'personality')
+    profile = UserProfile('european', 'disease')
     for key, val in profile.scores.items():
         print(key + ':', val)
     driver.close()
