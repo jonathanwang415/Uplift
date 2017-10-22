@@ -81,6 +81,23 @@ with mdb.connect('localhost', 'root', 'toor', 'userdb') as cur:
                 '\'Prone to lung cancer.\', \'Highly prone to lung cancer.\',' 
                 '\'{}\', \'{}\', \'{}\', \'{}\')'.format(L_oneSug, L_twoSug, L_threeSug, L_fourSug)))
     
+    Pr_oneSug = 'Eat more fat from plants thatn animal, it has been shown that fats from animals increased the risk. Consider Olive Oil rather than butter.'
+    Pr_twoSug = 'Reduce the amount of dairy you are eating each day.'
+    Pr_threeSug = 'Maintain a healthy weight by setting weekly goals to achieve on your step counter. Do not have a step counter? Use your phone!'
+    Pr_fourSug = 'Drinking a cup of Green Tea has been shown to prevent damage to cells. Maybe do some more research on this while drinking a cup of tea!'
+    cur.execute(('INSERT INTO disease(phenotype_name, zero, one, two, three, four, s_one, s_two, s_three, s_four) VALUES(\'prostate_cancer\',' 
+                '\'Lower risk of Prostate Cancer.\', \'Slightly prone to Prostate Cancer.\', \'Intermediatly prone to Prostate Cancer.\',' 
+                '\'Prone to lung cancer.\', \'Highly prone to lung cancer.\',' 
+                '\'{}\', \'{}\', \'{}\', \'{}\')'.format(Pr_oneSug, Pr_twoSug, Pr_threeSug, Pr_fourSug)))
+    Ni_oneSug = 'If you have attempted to deal with this yourself and are feeling frustrated and helpless, consider nicotine replacement therapay and talking to your doctor.'
+    Ni_twoSug = 'Support groups is a great way to help and also a way to meet people you can empathize with. This can boost your morale and keep you going foward with out using Nicotine.'
+    Ni_threeSug = 'It is not recommended to substitute cigarettes with other tobacco substances. They can still cause more damage to your lung which is already trying to repair itself. So it is best you do not do that.'
+    Ni_fourSug = 'Grab a journal, start planning, and paint a vision as to how you see yourself not smoking and actually partaking in other activties and practinging creating calming thoughts.'
+    Ni.execute(('INSERT INTO disease(phenotype_name, zero, one, two, three, four, s_one, s_two, s_three, s_four) VALUES(\'nicotine_dependence\',' 
+                '\'Lower risk of Nicotine Dependence.\', \'Slightly prone to Nicotine Dependence.\', \'Intermediatly prone to Nicotine Dependence\',' 
+                '\'Prone to Nicotine Dependence.\', \'Highly prone to Nicotine Dependence.\',' 
+                '\'{}\', \'{}\', \'{}\', \'{}\')'.format(Ni_oneSug, Ni_twoSug, Ni_threeSug, Ni_fourSug)))
+    
     cur.execute(('CREATE TABLE personality(id INT PRIMARY KEY AUTO_INCREMENT, phenotype_name VARCHAR(150), zero VARCHAR(100),'
                 'one VARCHAR(100), two VARCHAR(100), three VARCHAR(100), four VARCHAR(100), s_one VARCHAR(1000), s_two VARCHAR(1000),' 
                 's_three VARCHAR(1000), s_four VARCHAR(1000) )'))
