@@ -10,7 +10,7 @@ def sms_reply():
     resp = MessagingResponse()
 
     body = request.values.get('Body', None)
-    print body
+    print(body)
     response = getReply(body)
 
     # Other fields we could leverage later on

@@ -7,18 +7,18 @@ def getReply(body):
         if cmd in categoriesCommands:
             # TODO: Add more responses here.
             if cmd is 1:
-                return "You choose category: " + categories[cmd-1]
+                return "You choosed category: " + categories[cmd-1]
             elif cmd is 2:
-                return "You choose category: " + categories[cmd-1]
+                return "You choosed category: " + categories[cmd-1]
             elif cmd is 3:
-                return "You choose category: " + categories[cmd-1]
+                return "You choosed category: " + categories[cmd-1]
             elif cmd is 4:
-                return "You choose category: " + categories[cmd-1]
+                return "You choosed category: " + categories[cmd-1]
             else:
-                return "You choose category: " + categories[cmd-1]
+                return "You choosed category: " + categories[cmd-1]
         else:
             return body + " is not a valid category."\
-            "\nPlease enter a category from 1 - 6." \
+            "\nPlease enter a category from 1 - 5." \
             "\nHere are the following categories: " \
             "\n1 - Physical Traits: " \
             "\n2 - Personality: " \
@@ -30,7 +30,7 @@ def getReply(body):
         # Set up code here
         if body is "start":
             return "Hi! Welcome to Uplift."\
-            "\nPlease enter a category from 1 - 6." \
+            "\nPlease enter a category from 1 - 5." \
             "\nHere are the following categories: " \
             "\n1 - Physical Traits: " \
             "\n2 - Personality: " \
