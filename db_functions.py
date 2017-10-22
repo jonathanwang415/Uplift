@@ -18,7 +18,7 @@ def user_exists(phone_number, cursor):
 def add_user(phone_number, name, cursor):
     if not user_exists(phone_number, cursor):
         scores = {}
-        for category in ['personality', 'allergy', 'disease', 'food_and_nutrition']:
+        for category in ['trait', 'personality', 'allergy', 'disease', 'food_and_nutrition']:
             for key, value in UserProfile('european', category).scores.items():
                 scores[key] = value
         scores = OrderedDict(sorted(scores.items(), key=lambda t: t[0]))
