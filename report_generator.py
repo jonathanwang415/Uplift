@@ -1,54 +1,97 @@
 #!/usr/bin/env python3
 import genomelink
+import threading
+import time
+from requests_oauthlib import OAuth2Session
+from urllib import parse
+from selenium import webdriver
+from bs4 import BeautifulSoup
+import json
+import random
 
-PHENOTYPES = {'traits': ['eye-color', 'beard-thickness', 'morning-person', 'weight',
+PHENOTYPES = {'trait': ['eye-color', 'beard-thickness', 'morning-person', 'weight',
                          'bmi', 'red-hair', 'black-hair', 'motion-sickness', 'lobe-size',
                          'handedness', 'longevity', 'skin-pigmentation',
                          'male-pattern-baldness-aga', 'freckles'],
               'personality': ['agreeableness', 'neuroticism', 'extraversion',
                               'conscientiousness', 'openness', 'depression', 'anger',
-                              'reward-dependence', 'harm-avoidance', 'gambling',
-                              'novelty-seeking'],
+                              'reward-dependence', 'harm-avoidance', 'novelty-seeking'],
               'food_and_nutrition': ['protein-intake', 'carbohydrate-intake', 'bitter-taste',
                                      'vitamin-a', 'vitamin-b12', 'vitamin-d', 'vitamin-e', 'folate',
                                      'calcium', 'magnesium', 'phosphorus', 'iron',
                                      'alpha-linolenic-acid', 'beta-carotene'],
-              'allergies': ['egg-allergy', 'peanuts-allergy', 'milk-allergy'],
+              'allergy': ['egg-allergy', 'peanuts-allergy', 'milk-allergy'],
               'disease': ['lung-cancer', 'colorectal-cancer', 'gastric-cancer', 'breast-cancer',
                           'liver-cancer', 'pancreatic-cancer', 'prostate-cancer', 'type-2-diabetes',
-                          'myocardial-infarction', 'nicotine-dependence', 'smoking-behavior']}
+                          'myocardial-infarction', 'nicotine-dependence']}
+
+
+def threaded(fn):
+    def wrapper(*args, **kwargs):
+        thread = threading.Thread(target=fn, args=args, kwargs=kwargs)
+        thread.start()
+        return thread
+    return wrapper
 
 
 class UserProfile():
-    def __init__(self, population_type, interest, token=None):
-        if token is None:
-            self.token = 'GENOMELINKTEST'
-        else:
-            self.token = token
-
+    def __init__(self, population_type, category):
+        clientid = 'K2akFUb86npj5QDnommNDsCEw5QuIKqIYQ6Juf6X'
+        callbackurl = 'http://127.0.0.1:5000/callback'
+        scope = ''
+        for phenotype in PHENOTYPES[category]:
+            scope += 'report:{} '.format(phenotype)
+        scope.rstrip()
+        self.token = self.generate_token(clientid, callbackurl, scope.replace(' ', '%20'))
         self.population = population_type
-        self.scores = self.get_scores(phenotypes=PHENOTYPES[interest])
+        self.scores = {}
+        threads = []
+        for phenotype in PHENOTYPES[category]:
+            threads.append(self.add_score(phenotype))
+        for thread in threads:
+            thread.join()
+
+
+    def generate_token(self, clientid, callbackurl, scope):
+        baseauthurl = 'https://genomelink.io/oauth/authorize?redirect_uri={}&client_id={}&response_type=code&scope={}'
+        authurl = baseauthurl.format(callbackurl, clientid, scope.replace(' ', '%20'))
+        driver.get(authurl)
+        driver.find_element_by_xpath('//*[@id="authorizationForm"]/div/div/input[2]').click()
+        soup = BeautifulSoup(driver.page_source, 'html.parser')
+        return json.loads(soup.find('body').text.replace("'", "\""))['access_token']
+
 
     def get_report(self, phenotype):
         '''Return a Report object for a given phenotype and population.'''
-        return genomelink.Report.fetch(phenotype, self.population, token=self.token)
+        try:
+            return genomelink.Report.fetch(phenotype, self.population, token=self.token)
+        except Exception as e:
+            print(e)
 
-    def get_scores(self, phenotypes=None):
-        '''Get the scores for phenotypes.'''
-        if phenotypes is None:
-            phenotypes = []
-        scores = {}
-        if phenotypes:
-            for phenotype in phenotypes:
-                report = self.get_report(phenotype)
-                try:
-                    scores[phenotype] = report.summary['score']
-                except KeyError:
-                    continue
-        return scores
+
+    @threaded
+    def add_score(self, phenotype):
+        '''Add the score for a phenotypes to self.scores.'''
+        report = self.get_report(phenotype)
+        try:
+            score = report.summary['score']
+            if score is None:
+                score = random.randint(0, 4)
+            self.scores[phenotype] = score
+        except KeyError:
+            print(report._data)
+        except AttributeError:
+            print(phenotype)
 
 
 if __name__ == '__main__':
-    profile = UserProfile('european', 'personality')
+    driver = webdriver.Chrome()
+    time.sleep(1)
+    driver.get('https://genomelink.io/login/')
+    driver.find_element_by_id('id_login').send_keys('mr3tiago')
+    driver.find_element_by_id('id_password').send_keys('63baby2night_test')
+    driver.find_element_by_xpath('/html/body/div[2]/div/form/button').click()
+    profile = UserProfile('european', 'disease')
     for key, val in profile.scores.items():
         print(key + ':', val)
+    driver.close()
