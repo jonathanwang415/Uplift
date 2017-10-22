@@ -14,8 +14,4 @@ def send_message(message, to_number):
         to=to_number,  # Number you are sending it to
         from_="+15174814216",  # Our registered Twilio number
         body=message)  # The messsage we are sending
-    return(message.sid)
-
-
-if __name__ == '__main__':
-    send_message('Hello', '+17146235999')
+    return message.sid

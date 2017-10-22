@@ -1,29 +1,32 @@
 #!/usr/bin/env python3
 from flask import Flask, request, redirect
-from twilio.twiml.messaging_response import MessagingResponse
-from process_response import getReply
+from process_response import reply
+from userStates import OFF, NEW_USER, EXISTING_USER, CATEGORY_INPUT, SIGN_UP, TIME_INPUT
+
 
 app = Flask(__name__)
 
+# Current User State
+STATE = ""
+
 @app.route("/sms", methods=["GET", "POST"])
 def sms_reply():
-    resp = MessagingResponse()
-
+    fromNumber = request.values.get('From', None)
     body = request.values.get('Body', None)
-    print(body)
-    response = getReply(body)
+    # Check new user
+    STATE = getState(fromNumber)
+    reply(fromNumber, body, STATE)
+
 
     # Other fields we could leverage later on
-    # from_num = request.values.get('From', None)
     # direction = request.values.get('Direction', None)
     # city = request.values.get('FromCity', None)
     # state = request.values.get('FromState', None)
     # zip = request.values.get('FromZip', None)
     # country = request.values.get('FromCountry', None)
 
-    resp.message(response)
-    return str(resp)
+def getState (phoneNumber):
+    return "0"
 
 if __name__ == "__main__":
     app.run(debug=True)
-    
