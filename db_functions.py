@@ -4,6 +4,11 @@ from collections import OrderedDict
 from selenium import webdriver
 from report_generator import PHENOTYPES, UserProfile, login, driver
 
+phenotypes = []
+for category in ['trait', 'personality', 'allergy', 'disease', 'food_and_nutrition']:
+    phenotypes += list(PHENOTYPES[category])
+phenotypes.sort()
+
 
 def user_exists(phone_number, cursor):
     query = 'SELECT * FROM users WHERE phone_number={}'.format(phone_number)
@@ -61,8 +66,36 @@ def get_score(phone_number, phenotype, cursor):
     return {phenotype: result}
 
 
-def get_suggestions(phone_number, phenotype, cursor):
-    query = ''
+def num_suggestions(phenotype, cursor):
+    query = 'SELECT s_one, s_two, s_three, s_four FROM {} WHERE phenotype_name=\'' + phenotype.replace('-', '_') + '\';'
+    if phenotype in PHENOTYPES['disease']:
+        query = query.format('disease')
+    elif phenotype in PHENOTYPES['food_and_nutrition']:
+        query = query.format('foodnutrition')
+    elif phenotype in PHENOTYPES['personality']:
+        query = query.format('personality')
+    else:
+        return 0
+    cursor.execute(query)
+    sugestions = cursor.fetchone()
+    if sugestions:
+        return len(sugestions)
+    else:
+        return 0
+
+
+def get_suggestions(phenotype, cursor):
+    query = 'SELECT s_one, s_two, s_three, s_four FROM {} WHERE phenotype_name=\'' + phenotype.replace('-', '_') + '\';'
+    if phenotype in PHENOTYPES['disease']:
+        query = query.format('disease')
+    elif phenotype in PHENOTYPES['food_and_nutrition']:
+        query = query.format('foodnutrition')
+    elif phenotype in PHENOTYPES['personality']:
+        query = query.format('personality')
+    else:
+        return None
+    cursor.execute(query)
+    return cursor.fetchone()
 
 
 if __name__ == '__main__':
@@ -74,6 +107,10 @@ if __name__ == '__main__':
             get_user_state('+17146235999', cur)
             egg_allergy_score = get_score('+17146235999', 'egg-allergy', cur)
             disease_scores = get_scores('+17146235999', PHENOTYPES['disease'], cur)
+            for phenotype in phenotypes:
+                if num_suggestions(phenotype, cur):
+                    print(phenotype)
+                    print(get_suggestions(phenotype, cur))
     except Exception as err:
         print(err)
     finally:
