@@ -2,8 +2,11 @@ import random
 import MySQLdb as mdb
 from twilio.twiml.messaging_response import MessagingResponse
 from userStates import OFF, NEW_USER, ADDING_USER, EXISTING_USER, CATEGORY_INPUT, GETTING_CATEGORY
-from db_functions import set_user_state, add_user, get_score, get_scores, user_exists, num_suggestions, get_suggestions
-from report_generator import PHENOTYPES
+from db_functions import  set_user_name, set_user_state, get_user_state, add_user, get_score, get_scores, user_exists, num_suggestions, get_suggestions
+from report_generator import PHENOTYPES, login
+from send_sms import send_message
+
+login()
 
 categoriesCommands = ["1", "2", "3", "4", "5"]
 quitCommands = ["q", "Q", "QUIT", "quit", "Quit"]
@@ -42,6 +45,11 @@ def getPhenotypeDescription(phoneNumber, phenotype):
             query = query.format(score_str, 'personality', phenotype)
         else:
             return 'No description'
+        cur.execute(query)
+        try:
+            return cur.fetchone()[0]
+        except TypeError:
+            return 'No description'
 
 
 def getPhenotypeRecommendation(phenotype):
@@ -57,6 +65,13 @@ def getScores(phoneNumber, phenotypes):
         return get_scores(phoneNumber, phenotypes, cur)
 
 
+def getState(phoneNumber):
+    with mdb.connect('localhost', 'root', 'toor', 'userdb') as cur:
+        state = get_user_state(phoneNumber, cur)
+        if state is not None:
+            return str(state)
+
+
 def setState(phoneNumber, state):
     with mdb.connect('localhost', 'root', 'toor', 'userdb') as cur:
         set_user_state(phoneNumber, state, cur)
@@ -65,40 +80,44 @@ def setState(phoneNumber, state):
 def addUser(phoneNumber, name):
     with mdb.connect('localhost', 'root', 'toor', 'userdb') as cur:
         add_user(phoneNumber, name, cur)
+        set_user_state(phoneNumber, ADDING_USER, cur)
+
+
+def setName(phoneNumber, name):
+    with mdb.connect('localhost', 'root', 'toor', 'userdb') as cur:
+        set_user_name(phoneNumber, name, cur)
 
 
 def reply(phoneNumber, body, state):
-    resp = MessagingResponse()
-    response = "hi"
-    resp.message(response)
-
-    if state is OFF:
-        msg = "Hi there! This is Uplift’s automated chat bot responding. "\
-                "I’m here to give you some useful insight about your genome as well as some tips to help you be the best you."
-        resp.message(msg)
-        if isNewUser(phoneNumber):
-            setState(phoneNumber, NEW_USER)
-        else:
-            setState(phoneNumber, EXISTING_USER)
-        
-    elif state is NEW_USER:
+    if state == OFF:
+        msg = ("Hi there! This is Uplift’s automated chat bot responding. "
+               "I’m here to give you some useful insight about your genome as well as some tips to help you be the best you.")
+        send_message(msg, phoneNumber)
+        setState(phoneNumber, EXISTING_USER)
+        # if isNewUser(phoneNumber):
+        #     state = NEW_USER
+        # else:
+        #     state = getState(phoneNumber)
+        # reply(phoneNumber, body, state)
+    elif state == NEW_USER:
         msg = "Looks like you’re a new user. What’s your name?"
-        resp.message(msg)
+        send_message(msg, phoneNumber)
+        addUser(phoneNumber, 'NULL')
         setState(phoneNumber, ADDING_USER)
-    elif state is ADDING_USER:
-        msg = "Nice to meet you, (name)."
-        resp.message(msg)
+    elif state == ADDING_USER:
+        msg = "Nice to meet you, " + body +"."
+        send_message(msg, phoneNumber)
         # Set name here with body
-        addUser(phoneNumber, body)
+        setName(phoneNumber, body)
         # Change state to CATEGORY INPUT
         setState(phoneNumber, CATEGORY_INPUT)
-    elif state is EXISTING_USER:
-        msg = "Welcome back, " + "(NAME)" + "!"
-        resp.message(msg)
+        return reply(phoneNumber, body, CATEGORY_INPUT)
+    elif state == EXISTING_USER:
+        msg = "Welcome back!"
+        send_message(msg, phoneNumber)
         # Change state to CATEGORY INPUT
         setState(phoneNumber, CATEGORY_INPUT)
-    
-    elif state is CATEGORY_INPUT:
+    elif state == CATEGORY_INPUT:
         msg = "What would you like to learn about today? Here are some commands you can reply with to learn more about your phenotypes:"\
                 "\n“1” to learn about your physical traits"\
                 "\n“2” to learn about your personality"\
@@ -106,20 +125,20 @@ def reply(phoneNumber, body, state):
                 "\n“4” to learn about your allergies"\
                 "\n“5” to learn about your diseases"\
                 "\n“q or quit” to leave the conversation"
-        resp.message(msg)
+        send_message(msg, phoneNumber)
         # Change state to GETTING CATEGORY
         setState(phoneNumber, GETTING_CATEGORY)
-    elif state is GETTING_CATEGORY:
+    elif state == GETTING_CATEGORY:
         if body in categoriesCommands:
             # A WHOLE LOTTA SHIT HERE
-            if body is "1":
+            if body == "1":
                 msg_1 = "Cool, you selected physical traits! Give me a second to grab your information."
                 phenotypes = getScores(phoneNumber, PHENOTYPES['trait'])
                 phenotype = random.choice(list(phenotypes.keys()))
                 score = phenotypes[phenotype]
                 msg_2 = "Here's an interesting one: " + phenotype
-                msg_3 = getPhenotypeDescription()
-                msg_4 = getPhenotypeRecommendation()
+                msg_3 = getPhenotypeDescription(phoneNumber, phenotype)
+                msg_4 = getPhenotypeRecommendation(phenotype)
                 msg_5 = "Would you like to learn more about your phenotypes?"\
                     "\n“1” to learn about your physical traits"\
                     "\n“2” to learn about your personality"\
@@ -127,14 +146,14 @@ def reply(phoneNumber, body, state):
                     "\n“4” to learn about your allergies"\
                     "\n“5” to learn about your diseases"\
                     "\n“q or quit” to leave the conversation"
-                resp.message(msg_1)
-                resp.message(msg_2)
-                resp.message(msg_3)
-                resp.message(msg_4)
-                resp.message(msg_5)
+                send_message(msg_1, phoneNumber)
+                send_message(msg_2, phoneNumber)
+                send_message(msg_3, phoneNumber)
+                send_message(msg_4, phoneNumber)
+                send_message(msg_5, phoneNumber)
                 # Set state to GETTING_CATEGORY
                 setState(phoneNumber, GETTING_CATEGORY)
-            elif body is "2":
+            elif body == "2":
                 msg_1 = "Cool, you selected personality! Give me a second to grab your information."
                 phenotypes = getScores(phoneNumber, PHENOTYPES['personality'])
                 phenotype = random.choice(list(phenotypes.keys()))
@@ -149,14 +168,14 @@ def reply(phoneNumber, body, state):
                     "\n“4” to learn about your allergies"\
                     "\n“5” to learn about your diseases"\
                     "\n“q or quit” to leave the conversation"
-                resp.message(msg_1)
-                resp.message(msg_2)
-                resp.message(msg_3)
-                resp.message(msg_4)
-                resp.message(msg_5)
+                send_message(msg_1, phoneNumber)
+                send_message(msg_2, phoneNumber)
+                send_message(msg_3, phoneNumber)
+                send_message(msg_4, phoneNumber)
+                send_message(msg_5, phoneNumber)
                 # Set state to GETTING_CATEGORY
                 setState(phoneNumber, GETTING_CATEGORY)
-            elif body is "3":
+            elif body == "3":
                 msg_1 = "Cool, you selected food and nutrition! Give me a second to grab your information."
                 phenotypes = getScores(phoneNumber, PHENOTYPES['food_and_nutrition'])
                 phenotype = random.choice(list(phenotypes.keys()))
@@ -171,14 +190,14 @@ def reply(phoneNumber, body, state):
                     "\n“4” to learn about your allergies"\
                     "\n“5” to learn about your diseases"\
                     "\n“q or quit” to leave the conversation"
-                resp.message(msg_1)
-                resp.message(msg_2)
-                resp.message(msg_3)
-                resp.message(msg_4)
-                resp.message(msg_5)
+                send_message(msg_1, phoneNumber)
+                send_message(msg_2, phoneNumber)
+                send_message(msg_3, phoneNumber)
+                send_message(msg_4, phoneNumber)
+                send_message(msg_5, phoneNumber)
                 # Set state to GETTING_CATEGORY
                 setState(phoneNumber, GETTING_CATEGORY)
-            elif body is "4":
+            elif body == "4":
                 msg_1 = "Cool, you selected allergies! Give me a second to grab your information."
                 phenotypes = getScores(phoneNumber, PHENOTYPES['allergy'])
                 phenotype = random.choice(list(phenotypes.keys()))
@@ -193,11 +212,11 @@ def reply(phoneNumber, body, state):
                     "\n“4” to learn about your allergies"\
                     "\n“5” to learn about your diseases"\
                     "\n“q or quit” to leave the conversation"
-                resp.message(msg_1)
-                resp.message(msg_2)
-                resp.message(msg_3)
-                resp.message(msg_4)
-                resp.message(msg_5)
+                send_message(msg_1, phoneNumber)
+                send_message(msg_2, phoneNumber)
+                send_message(msg_3, phoneNumber)
+                send_message(msg_4, phoneNumber)
+                send_message(msg_5, phoneNumber)
                 # Set state to GETTING_CATEGORY
                 setState(phoneNumber, GETTING_CATEGORY)
             else:
@@ -215,16 +234,16 @@ def reply(phoneNumber, body, state):
                     "\n“4” to learn about your allergies"\
                     "\n“5” to learn about your diseases"\
                     "\n“q or quit” to leave the conversation"
-                resp.message(msg_1)
-                resp.message(msg_2)
-                resp.message(msg_3)
-                resp.message(msg_4)
-                resp.message(msg_5)
+                send_message(msg_1, phoneNumber)
+                send_message(msg_2, phoneNumber)
+                send_message(msg_3, phoneNumber)
+                send_message(msg_4, phoneNumber)
+                send_message(msg_5, phoneNumber)
                 # Set state to GETTING_CATEGORY
                 setState(phoneNumber, GETTING_CATEGORY)
         elif body in quitCommands:
             msg = "Thanks for listening! Hope to hear from you soon :)"
-            resp.message(msg)
+            send_message(msg, phoneNumber)
             # Set state to OFF
             setState(phoneNumber, OFF)
         else:
@@ -236,6 +255,6 @@ def reply(phoneNumber, body, state):
                 "\n“4” to learn about your allergies"\
                 "\n“5” to learn about your diseases"\
                 "\n“q or quit” to leave the conversation"
-            resp.message(msg_1)
-            resp.message(msg_2)        
-    return str(resp)
+            send_message(msg_1, phoneNumber)
+            send_message(msg_2, phoneNumber)
+    return str(MessagingResponse())

@@ -47,7 +47,16 @@ def set_user_state(phone_number, state, cursor):
 def get_user_state(phone_number, cursor):
     query = 'SELECT state FROM users WHERE phone_number={};'.format(phone_number)
     cursor.execute(query)
-    return cursor.fetchone()[0]
+    state = cursor.fetchone()
+    if state is not None:
+        return state[0]
+    else:
+        return None
+
+
+def set_user_name(phone_number, name, cursor):
+    query = 'UPDATE users SET name=\'{}\' WHERE phone_number={};'.format(str(name), phone_number)
+    cursor.execute(query)
 
 
 def get_scores(phone_number, phenotypes, cursor):
@@ -103,7 +112,7 @@ if __name__ == '__main__':
     try:
         with mdb.connect('localhost', 'root', 'toor', 'userdb') as cur:
             add_user('+17146235999', 'Patrick Woo-Sam', cur)
-            set_user_state('+17146235999', 0, cur)
+            set_user_state('+17146235999', 2, cur)
             get_user_state('+17146235999', cur)
             egg_allergy_score = get_score('+17146235999', 'egg-allergy', cur)
             disease_scores = get_scores('+17146235999', PHENOTYPES['disease'], cur)

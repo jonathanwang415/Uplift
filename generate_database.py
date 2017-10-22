@@ -64,9 +64,9 @@ with mdb.connect('localhost', 'root', 'toor', 'userdb') as cur:
                 '\'{}\', \'{}\', \'{}\', \'{}\')'.format(P_oneSug, P_twoSug, P_threeSug, P_fourSug)))
 
     Di_oneSug = 'Drink a large glass of water 10 minutes before your meal so you feel less hungry. This will help moderate your portion sizes.'
-    Di_twoSug = 'Try filling your plate with 1/4 protien, 1/4 grains, 1/2 vegetables and fruit, dairy (low-fat or skim milk).'
-    Di_threeSug = 'Turn up the music and jam while doing household chores to help with being active. Don\'t like chores? March in place while wathing tv.'
-    Di_fourSug = 'Here\'s a yummy meal to try: Serve your favorite vegetable and a sald with low-fat macaroni and cheese.'
+    Di_twoSug = 'Try filling your plate with 1/4 protien, 1/4 grains, 1/2 vegetables and fruit, dairy: low-fat or skim milk.'
+    Di_threeSug = 'Turn up the music and jam while doing household chores to help with being active. Do not like chores? March in place while wathing tv.'
+    Di_fourSug = 'Here is a yummy meal to try: Serve your favorite vegetable and a sald with low-fat macaroni and cheese.'
     cur.execute(('INSERT INTO disease(phenotype_name, zero, one, two, three, four, s_one, s_two, s_three, s_four) VALUES(\'type_2_diabetes\',' 
                 '\'Lower risk of Type-2-Diabetes.\', \'Slightly prone to Type-2-Diabetes\', \'Intermediatly prone to Type-2-Diabetes\',' 
                 '\'Prone to Type-2-Diabetes\', \'Highly prone to Type-2-Diabetes\',' 

@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 import MySQLdb as mdb
 from flask import Flask, request, redirect
-from process_response import reply
+from twilio.twiml.messaging_response import MessagingResponse
+
+from process_response import reply, isNewUser, getState
 from userStates import OFF, NEW_USER, EXISTING_USER, CATEGORY_INPUT, GETTING_CATEGORY, ADDING_USER
 from db_functions import get_user_state, driver
+from send_sms import send_message
 
 
 app = Flask(__name__)
@@ -16,7 +19,13 @@ def sms_reply():
     fromNumber = request.values.get('From', None)
     body = request.values.get('Body', None)
     # Check new user
-    STATE = getState(fromNumber)
+    if isNewUser(fromNumber):
+        msg = ("Hi there! This is Uplift’s automated chat bot responding. "
+               "I’m here to give you some useful insight about your genome as well as some tips to help you be the best you.")
+        send_message(msg, fromNumber)
+        STATE = NEW_USER
+    else:
+        STATE = getState(fromNumber)
     return reply(fromNumber, body, STATE)
 
 
@@ -27,9 +36,6 @@ def sms_reply():
     # zip = request.values.get('FromZip', None)
     # country = request.values.get('FromCountry', None)
 
-def getState(phoneNumber):
-    with mdb.connect('localhost', 'root', 'toor', 'userdb') as cur:
-        return str(get_user_state(phoneNumber, cur))
 
 if __name__ == "__main__":
     try:
