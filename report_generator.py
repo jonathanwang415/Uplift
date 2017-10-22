@@ -12,22 +12,30 @@ import random
 
 driver = webdriver.Chrome()
 
+# PHENOTYPES = {'trait': ['eye-color', 'beard-thickness', 'morning-person', 'weight',
+#                          'bmi', 'red-hair', 'black-hair', 'motion-sickness', 'lobe-size',
+#                          'handedness', 'longevity', 'skin-pigmentation',
+#                          'male-pattern-baldness-aga', 'freckles'],
+#               'personality': ['agreeableness', 'neuroticism', 'extraversion',
+#                               'conscientiousness', 'openness', 'depression', 'anger',
+#                               'reward-dependence', 'harm-avoidance', 'novelty-seeking'],
+#               'food_and_nutrition': ['protein-intake', 'carbohydrate-intake',
+#                                      'vitamin-a', 'vitamin-b12', 'vitamin-d', 'vitamin-e', 'folate',
+#                                      'calcium', 'magnesium', 'phosphorus', 'iron',
+#                                      'alpha-linolenic-acid', 'beta-carotene'],
+#               'allergy': ['egg-allergy', 'peanuts-allergy', 'milk-allergy'],
+#               'disease': ['lung-cancer', 'colorectal-cancer', 'gastric-cancer', 'breast-cancer',
+#                           'liver-cancer', 'pancreatic-cancer', 'prostate-cancer', 'type-2-diabetes',
+#                           'myocardial-infarction', 'nicotine-dependence']}
 PHENOTYPES = {'trait': ['eye-color', 'beard-thickness', 'morning-person', 'weight',
                          'bmi', 'red-hair', 'black-hair', 'motion-sickness', 'lobe-size',
                          'handedness', 'longevity', 'skin-pigmentation',
                          'male-pattern-baldness-aga', 'freckles'],
-              'personality': ['agreeableness', 'neuroticism', 'extraversion',
-                              'conscientiousness', 'openness', 'depression', 'anger',
-                              'reward-dependence', 'harm-avoidance', 'novelty-seeking'],
-              'food_and_nutrition': ['protein-intake', 'carbohydrate-intake',
-                                     'vitamin-a', 'vitamin-b12', 'vitamin-d', 'vitamin-e', 'folate',
-                                     'calcium', 'magnesium', 'phosphorus', 'iron',
-                                     'alpha-linolenic-acid', 'beta-carotene'],
+              'personality': ['neuroticism', 'depression'],
+              'food_and_nutrition': ['folate', 'calcium'],
               'allergy': ['egg-allergy', 'peanuts-allergy', 'milk-allergy'],
-              'disease': ['lung-cancer', 'colorectal-cancer', 'gastric-cancer', 'breast-cancer',
-                          'liver-cancer', 'pancreatic-cancer', 'prostate-cancer', 'type-2-diabetes',
-                          'myocardial-infarction', 'nicotine-dependence']}
-
+              'disease': ['lung-cancer', 'colorectal-cancer', 'prostate-cancer', 'type-2-diabetes',
+                          'nicotine-dependence']}
 
 def login():
     driver.get('https://genomelink.io/login/')

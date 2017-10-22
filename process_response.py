@@ -203,10 +203,21 @@ def reply(phoneNumber, body, state):
                 phenotypes = getScores(phoneNumber, PHENOTYPES['allergy'])
                 phenotype = random.choice(list(phenotypes.keys()))
                 score = phenotypes[phenotype]
+                if score == 0:
+                    severity = 'a very low risk'
+                elif score == 1:
+                    severity = 'a low risk'
+                elif score == 2:
+                    severity = 'an intermediate risk'
+                elif score == 3:
+                    severity = 'a significant risk'
+                elif score == 4:
+                    severity = 'a high risk'
+                else:
+                    severity = ''
                 msg_2 = "Here's an interesting one: " + phenotype
-                msg_3 = getPhenotypeDescription(phoneNumber, phenotype)
-                msg_4 = getPhenotypeRecommendation(phenotype)
-                msg_5 = "Would you like to learn more about your phenotypes?"\
+                msg_3 = 'You have ' + severity + ' of suffering from ' + phenotype + '.'
+                msg_4 = "Would you like to learn more about your phenotypes?"\
                     "\n“1” to learn about your physical traits"\
                     "\n“2” to learn about your personality"\
                     "\n“3” to learn about your food and nutrition"\
@@ -217,7 +228,6 @@ def reply(phoneNumber, body, state):
                 send_message(msg_2, phoneNumber)
                 send_message(msg_3, phoneNumber)
                 send_message(msg_4, phoneNumber)
-                send_message(msg_5, phoneNumber)
                 # Set state to GETTING_CATEGORY
                 setState(phoneNumber, GETTING_CATEGORY)
             elif body == '5':
