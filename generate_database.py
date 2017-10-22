@@ -94,7 +94,7 @@ with mdb.connect('localhost', 'root', 'toor', 'userdb') as cur:
     Nic_twoSug = 'Support groups is a great way to help and also a way to meet people you can empathize with. This can boost your morale and keep you going foward with out using Nicotine.'
     Nic_threeSug = 'It is not recommended to substitute cigarettes with other tobacco substances. They can still cause more damage to your lung which is already trying to repair itself. So it is best you do not do that.'
     Nic_fourSug = 'Grab a journal, start planning, and paint a vision as to how you see yourself not smoking and actually partaking in other activties and practinging creating calming thoughts.'
-    Nic.execute(('INSERT INTO disease(phenotype_name, zero, one, two, three, four, s_one, s_two, s_three, s_four) VALUES(\'nicotine_dependence\',' 
+    cur.execute(('INSERT INTO disease(phenotype_name, zero, one, two, three, four, s_one, s_two, s_three, s_four) VALUES(\'nicotine_dependence\',' 
                 '\'Lower risk of Nicotine Dependence.\', \'Slightly prone to Nicotine Dependence.\', \'Intermediatly prone to Nicotine Dependence\',' 
                 '\'Prone to Nicotine Dependence.\', \'Highly prone to Nicotine Dependence.\',' 
                 '\'{}\', \'{}\', \'{}\', \'{}\')'.format(Nic_oneSug, Nic_twoSug, Nic_threeSug, Nic_fourSug)))
