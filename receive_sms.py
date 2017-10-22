@@ -2,8 +2,8 @@
 import MySQLdb as mdb
 from flask import Flask, request, redirect
 from process_response import reply
-from userStates import OFF, NEW_USER, EXISTING_USER, CATEGORY_INPUT, SIGN_UP, TIME_INPUT
-from db_functions import get_user_state
+from userStates import OFF, NEW_USER, EXISTING_USER, CATEGORY_INPUT, GETTING_CATEGORY, ADDING_USER
+from db_functions import get_user_state, driver
 
 
 app = Flask(__name__)
@@ -17,7 +17,7 @@ def sms_reply():
     body = request.values.get('Body', None)
     # Check new user
     STATE = getState(fromNumber)
-    reply(fromNumber, body, STATE)
+    return reply(fromNumber, body, STATE)
 
 
     # Other fields we could leverage later on
@@ -27,9 +27,14 @@ def sms_reply():
     # zip = request.values.get('FromZip', None)
     # country = request.values.get('FromCountry', None)
 
-def getState (phoneNumber):
+def getState(phoneNumber):
     with mdb.connect('localhost', 'root', 'toor', 'userdb') as cur:
         return str(get_user_state(phoneNumber, cur))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    try:
+        app.run(debug=True, port=8080)
+    except Exception as err:
+        print(err)
+    finally:
+        driver.close()
