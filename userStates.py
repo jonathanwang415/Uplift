@@ -1,0 +1,9 @@
+# User States
+OFF = "0"
+NEW_USER = "1"
+ADDING_USER = "2"
+EXISTING_USER = "3"
+CATEGORY_INPUT = "4"
+GETTING_CATEGORY = "5"
+# SIGN_UP = "5"
+# TIME_INPUT = "6"
