@@ -8,7 +8,7 @@ from selenium import webdriver
 from bs4 import BeautifulSoup
 import json
 
-PHENOTYPES = {'traits': ['eye-color', 'beard-thickness', 'morning-person', 'weight',
+PHENOTYPES = {'trait': ['eye-color', 'beard-thickness', 'morning-person', 'weight',
                          'bmi', 'red-hair', 'black-hair', 'motion-sickness', 'lobe-size',
                          'handedness', 'longevity', 'skin-pigmentation',
                          'male-pattern-baldness-aga', 'freckles'],
@@ -19,7 +19,7 @@ PHENOTYPES = {'traits': ['eye-color', 'beard-thickness', 'morning-person', 'weig
                                      'vitamin-a', 'vitamin-b12', 'vitamin-d', 'vitamin-e', 'folate',
                                      'calcium', 'magnesium', 'phosphorus', 'iron',
                                      'alpha-linolenic-acid', 'beta-carotene'],
-              'allergies': ['egg-allergy', 'peanuts-allergy', 'milk-allergy'],
+              'allergy': ['egg-allergy', 'peanuts-allergy', 'milk-allergy'],
               'disease': ['lung-cancer', 'colorectal-cancer', 'gastric-cancer', 'breast-cancer',
                           'liver-cancer', 'pancreatic-cancer', 'prostate-cancer', 'type-2-diabetes',
                           'myocardial-infarction', 'nicotine-dependence']}
@@ -35,18 +35,13 @@ def threaded(fn):
 
 class UserProfile():
     def __init__(self, population_type, category):
-        if category == 'disease':
-            callbackurl = 'http://127.0.0.1:5000/diseases'
-            clientid = 'VY5sgiATWxUtzS0gbkdrTyFwu2CdUCVxMBtZF3qg'
-            scope = 'report:lung-cancer report:colorectal-cancer report:gastric-cancer report:breast-cancer report:liver-cancer report:pancreatic-cancer report:prostate-cancer report:type-2-diabetes report:myocardial-infarction report:nicotine-dependence'
-            self.token = self.generate_token(clientid, callbackurl, scope.replace(' ', '%20'))
-        elif category == 'personality':
-            clientid = 'K2akFUb86npj5QDnommNDsCEw5QuIKqIYQ6Juf6X'
-            callbackurl = 'http://127.0.0.1:5000/personality'
-            scope = 'report:agreeableness report:anger report:conscientiousness report:depression report:extraversion report:harm-avoidance report:neuroticism report:novelty-seeking report:openness report:reward-dependence'
-            self.token = self.generate_token(clientid, callbackurl, scope.replace(' ', '%20'))
-        else:
-            self.token = 'GENOMELINKTEST'
+        clientid = 'K2akFUb86npj5QDnommNDsCEw5QuIKqIYQ6Juf6X'
+        callbackurl = 'http://127.0.0.1:5000/callback'
+        scope = ''
+        for phenotype in PHENOTYPES[category]:
+            scope += 'report:{} '.format(phenotype)
+        scope.rstrip()
+        self.token = self.generate_token(clientid, callbackurl, scope.replace(' ', '%20'))
         self.population = population_type
         self.scores = {}
         threads = []
