@@ -5,11 +5,18 @@ from selenium import webdriver
 from report_generator import PHENOTYPES, UserProfile, login, driver
 
 
-def add_user(phone_number, name, cursor):
+def user_exists(phone_number, cursor):
     query = 'SELECT * FROM users WHERE phone_number={}'.format(phone_number)
     cursor.execute(query)
     user = cursor.fetchone()
-    if not user:
+    if user:
+        return True
+    else:
+        return False
+
+
+def add_user(phone_number, name, cursor):
+    if not user_exists(phone_number, cursor):
         scores = {}
         for category in ['personality', 'allergy', 'disease', 'food_and_nutrition']:
             for key, value in UserProfile('european', category).scores.items():
@@ -52,6 +59,10 @@ def get_score(phone_number, phenotype, cursor):
     cursor.execute(query)
     result = cursor.fetchone()[0]
     return {phenotype: result}
+
+
+def get_suggestions(phone_number, phenotype, cursor):
+    query = ''
 
 
 if __name__ == '__main__':
